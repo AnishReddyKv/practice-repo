@@ -1,0 +1,46 @@
+
+name: Build Frontend and Backend Images
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  build-images:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Create frontend Dockerfile
+        run: |
+          cat > frontend/Dockerfile <<'EOF'
+          FROM node:20-alpine
+          WORKDIR /app
+          COPY package*.json ./
+          RUN npm ci
+          COPY . .
+          EXPOSE 3000
+          CMD ["npm", "start"]
+          EOF
+
+      - name: Create backend Dockerfile
+        run: |
+          cat > backend/Dockerfile <<'EOF'
+          FROM node:20-alpine
+          WORKDIR /app
+          COPY package*.json ./
+          RUN npm ci --omit=dev
+          COPY . .
+          EXPOSE 5000
+          CMD ["node", "server.js"]
+          EOF
+
+      - name: Build frontend image
+        run: docker build -t my-frontend -f frontend/Dockerfile frontend
+
+      - name: Build backend image
+        run: docker build -t my-backend -f backend/Dockerfile backend
