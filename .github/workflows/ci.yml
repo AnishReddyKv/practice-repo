@@ -49,7 +49,7 @@ jobs:
            password: ${{ secrets.PASSWORD_ORTOKEN }}
 
       - name: Build frontend image
-        run: docker build -t my-frontend .
+        run: docker build -t my-frontend . ./frontend
 
       - name: Build backend image
-        run: docker build -t my-backend .
+        run: docker build -t my-backend . ./backend
