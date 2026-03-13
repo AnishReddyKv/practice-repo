@@ -39,6 +39,15 @@ jobs:
           CMD ["node", "server.js"]
           EOF
 
+      -name: set up docker build
+      uses: docker/setup-buildx-action@v3
+
+      -name: log in to dockerhub
+      uses: docker/login-actions@v3
+      with:
+         username: ${{secrets.USERNAME_DOCKERHUB}}
+         password: ${{secrets.PASSWORD_ORTOKEN}}
+
       - name: Build frontend image
         run: docker build -t my-frontend -f frontend/Dockerfile frontend
 
