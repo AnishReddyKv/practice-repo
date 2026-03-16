@@ -48,7 +48,7 @@ jobs:
            password: ${{ secrets.PASSWORD_ORTOKEN }}
 
       - name: Build docker image
-        run: docker build -t ${{ secrets.USERNAME_DOCKERHUB }}/frontend-app:latest 
+        run: docker build -t ${{ secrets.USERNAME_DOCKERHUB }}/frontend-app:latest .
 
       - name: Push docker image
         run:  docker push ${{ secrets.USERNAME_DOCKERHUB }}/frontend-app:latest
