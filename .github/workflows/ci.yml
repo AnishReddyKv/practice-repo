@@ -58,11 +58,11 @@ jobs:
           mkdir -p ~/.ssh
           echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
           chmod 600 ~/.ssh/id_rsa
-          ssh-keyscan ${{ secrets.SSH_HOST }} >> ~/.ssh/known_hosts
+          ssh-keyscan ${{ secrets.SSH_USERNAME }} >> ~/.ssh/known_hosts
           
       - name: Deploy to Server
         run: |
-          ssh ${{ secrets.SSH_SERVER }} << 'EOF'
+          ssh ${{ secrets.SSH_IP }} << 'EOF'
             docker pull ${{ secrets.USERNAME_DOCKERHUB }}/frontend-app:latest
 
             docker stop myapp || true
