@@ -68,7 +68,7 @@ jobs:
           docker rm myapp || true
           docker run -d \
             --name myapp \
-            -p 80:3000 \
+            -p 8080:3000 \
             -p 5000:5000 \
             --restart unless-stopped \
             ${{ secrets.USERNAME_DOCKERHUB }}/frontend-app:latest
