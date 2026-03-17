@@ -4,6 +4,7 @@
   "private": true,
   "scripts": {
     "start": "node server.js"
+    "build": "vue-cli-service build"
   },
   "dependencies": {
     "express": "^4.18.2"
