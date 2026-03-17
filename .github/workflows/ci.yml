@@ -19,6 +19,7 @@ jobs:
           COPY frontend/package*.json ./
           RUN npm install
           COPY frontend ./
+          RUN npm run build 
 
           FROM node:20-alpine AS backend
           WORKDIR /app/backend
