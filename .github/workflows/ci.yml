@@ -28,7 +28,7 @@ jobs:
 
           FROM nginx:alpine
           WORKDIR /app
-          COPY --from=frontend /usr/share/nginx/html
+          COPY frontend /usr/share/nginx/html
           COPY --from=backend /app/backend ./backend
           COPY nginx.conf /etc/nginx/conf.d/default.conf
           EXPOSE 8080
