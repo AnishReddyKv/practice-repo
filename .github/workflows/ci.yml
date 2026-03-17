@@ -73,19 +73,18 @@ jobs:
 
       - name: Deploy to Server
         run: |
-         ssh -i ~/.ssh/id_rsa \
-         -o StrictHostKeyChecking=no \
-         ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_IP }} << EOF
+          ssh -i ~/.ssh/id_rsa \
+              -o StrictHostKeyChecking=no \
+              ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_IP }} << EOF
           docker pull ${{ secrets.USERNAME_DOCKERHUB }}/frontend-app:latest
           docker stop myapp || true
           docker rm myapp || true
           docker run -d \
-          --name myapp \
-          -p 8080:8080 \
-          --restart unless-stopped \
-          ${{ secrets.USERNAME_DOCKERHUB }}/frontend-app:latest
-
+            --name myapp \
+            -p 8080:8080 \
+            --restart unless-stopped \
+            ${{ secrets.USERNAME_DOCKERHUB }}/frontend-app:latest
           sleep 5
           echo "=== Container logs ==="
           docker logs myapp
-          EOF
+EOF
