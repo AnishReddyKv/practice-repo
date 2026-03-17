@@ -87,4 +87,4 @@ jobs:
           sleep 5
           echo "=== Container logs ==="
           docker logs myapp
-EOF
+          EOF
