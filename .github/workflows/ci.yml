@@ -53,20 +53,23 @@ jobs:
       - name: Setup SSH
         run: |
           mkdir -p ~/.ssh
-          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+          # Write key and ensure trailing newline
+          printf '%s\n' "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
           chmod 600 ~/.ssh/id_rsa
-          ssh-keyscan ${{ secrets.SSH_IP }} >> ~/.ssh/known_hosts  # ✅ use IP, not username
+          ssh-keyscan -H ${{ secrets.SSH_IP }} >> ~/.ssh/known_hosts
 
-      - name: Deploy to Server
-        run: |
-          ssh ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_IP }} << EOF  # ✅ user@host, unquoted EOF
-            docker pull ${{ secrets.USERNAME_DOCKERHUB }}/frontend-app:latest
-            docker stop myapp || true
-            docker rm myapp || true
-            docker run -d \
-              --name myapp \
-              -p 80:3000 \
-              -p 5000:5000 \
-              --restart unless-stopped \
-              ${{ secrets.USERNAME_DOCKERHUB }}/frontend-app:latest
-          EOF
+       - name: Deploy to Server
+         run: |
+           ssh -i ~/.ssh/id_rsa \
+               -o StrictHostKeyChecking=no \
+               ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_IP }} << EOF
+        docker pull ${{ secrets.USERNAME_DOCKERHUB }}/frontend-app:latest
+        docker stop myapp || true
+        docker rm myapp || true
+        docker run -d \
+          --name myapp \
+          -p 80:3000 \
+          -p 5000:5000 \
+          --restart unless-stopped \
+          ${{ secrets.USERNAME_DOCKERHUB }}/frontend-app:latest
+        EOF
