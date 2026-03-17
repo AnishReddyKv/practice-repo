@@ -6,6 +6,6 @@ app.get("/api", (req, res) => {
   res.json({ message: "Hello from Backend API" });
 });
 
-app.listen(5000, () => {
-  console.log("Backend running on port 5000");
+app.listen(8080, () => {
+  console.log("Backend running");
 });
