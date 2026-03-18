@@ -33,10 +33,11 @@ jobs:
 
           # Final image with Nginx serving frontend and proxying backend
           FROM nginx:alpine
-          COPY --from=frontend /app/frontend /usr/share/nginx/html
+          COPY frontend/public /usr/share/nginx/html
+          COPY --from=backend /app/backend /app/backend
           COPY nginx.conf /etc/nginx/conf.d/default.conf
           EXPOSE 8080
-          CMD ["nginx", "-g", "daemon off;"]
+          CMD ["sh", "-c", "node /app/backend/server.js & nginx -g 'daemon off;'"]
           EOF
 
       - name: Set up Docker Buildx
