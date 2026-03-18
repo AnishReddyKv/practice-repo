@@ -1,7 +1,8 @@
 name: Build Frontend and Backend Images
+
 on:
   push:
-    branches: main
+    branches: [ main ]
   workflow_dispatch:
 
 jobs:
@@ -19,34 +20,34 @@ jobs:
           COPY frontend/package*.json ./
           RUN npm install
           COPY frontend ./
-  
+
           FROM node:20-alpine AS backend
           WORKDIR /app/backend
           COPY backend/package*.json ./
           RUN npm install
           COPY backend ./
-  
+
           FROM nginx:alpine
           WORKDIR /app
           COPY frontend/public /usr/share/nginx/html
           COPY --from=backend /app/backend ./backend
           COPY nginx.conf /etc/nginx/conf.d/default.conf
+          COPY start.sh /start.sh
+          RUN chmod +x /start.sh
           EXPOSE 8080
-          CMD sh -c "node backend/server.js & nginx -g 'daemon off;'"
+          CMD ["/bin/bash", "/start.sh"]
           EOF
 
-          RUN echo '#!/bin/bash' > /start.sh && \
-              echo 'echo "Starting backend..."' >> /start.sh && \
-              echo 'node /app/backend/server.js &' >> /start.sh && \
-              echo 'echo "Starting frontend..."' >> /start.sh && \
-              echo 'node /app/frontend/server.js &' >> /start.sh && \
-              echo 'echo "Starting nginx..."' >> /start.sh && \
-              echo 'nginx -g "daemon off;"' >> /start.sh && \
-              chmod +x /start.sh
-
-          EXPOSE 8080
-
-          CMD ["/bin/bash", "/start.sh"]
+      - name: Create start.sh
+        run: |
+          cat > start.sh <<'EOF'
+          #!/bin/bash
+          echo "Starting backend..."
+          node /app/backend/server.js &
+          echo "Starting frontend..."
+          node /app/frontend/server.js &
+          echo "Starting nginx..."
+          nginx -g "daemon off;"
           EOF
 
       - name: Set up Docker Buildx
@@ -85,6 +86,6 @@ jobs:
             --restart unless-stopped \
             ${{ secrets.USERNAME_DOCKERHUB }}/frontend-app:latest
           sleep 5
-          echo " Container logs "
+          echo "Container logs"
           docker logs myapp
           EOF
