@@ -19,21 +19,21 @@ jobs:
           COPY frontend/package*.json ./
           RUN npm install
           COPY frontend ./
-
+  
           FROM node:20-alpine AS backend
           WORKDIR /app/backend
           COPY backend/package*.json ./
           RUN npm install
           COPY backend ./
-
-          FROM node:20-alpine
-
-          RUN apk add --no-cache nginx bash
-
+  
+          FROM nginx:alpine
           WORKDIR /app
-          COPY --from=frontend /app/frontend ./frontend
+          COPY frontend/public /usr/share/nginx/html
           COPY --from=backend /app/backend ./backend
-          COPY nginx.conf /etc/nginx/nginx.conf
+          COPY nginx.conf /etc/nginx/conf.d/default.conf
+          EXPOSE 8080
+          CMD sh -c "node backend/server.js & nginx -g 'daemon off;'"
+          EOF
 
           RUN echo '#!/bin/bash' > /start.sh && \
               echo 'echo "Starting backend..."' >> /start.sh && \
