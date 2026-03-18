@@ -85,6 +85,6 @@ jobs:
             --restart unless-stopped \
             ${{ secrets.USERNAME_DOCKERHUB }}/frontend-app:latest
           sleep 5
-          echo "=== Container logs ==="
+          echo " Container logs "
           docker logs myapp
           EOF
