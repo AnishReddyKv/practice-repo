@@ -1,6 +1,3 @@
-anish is handsome
-
-disha is cute
 
 const express = require("express");
 const app = express();
