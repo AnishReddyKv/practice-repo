@@ -35,11 +35,11 @@ jobs:
       - name: Create nginx.conf
         run: |
           cat > nginx.conf <<'EOF'
-          events {}
+          events {
 
           http {
             server {
-              listen 8080;
+              listen ;
 
               location / {
                 root /usr/share/nginx/html;
